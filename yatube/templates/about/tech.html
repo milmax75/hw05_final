@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+{% comment %} Колонки с отступом сверху и снизу {% endcomment %}
+<div class="row">
+  <h1>Вот, чему я учусь</h1>
+  {% comment %}
+    Боковой блок со списком технологий 
+    Займет всю ширину блока на мобильном
+    и 25% при размерах экрана ≥768px
+  {% endcomment %}
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+      </li>
+      <li class="list-group-item">
+        Django
+      </li>
+      <li class="list-group-item">
+        И еще немного HTML
+      </li>
+    </ul>
+  </aside>
+  {% comment %}
+    Статья  
+    Займет всю ширину блока на мобильном
+    и 75% при размерах экрана ≥768px
+  {% endcomment %}
+  <article class="col-12 col-md-9">
+    <p>Технологии бывают разные. <br>
+      Одни позволяют писать код. <br>
+      А другие находить в себе силы писать код.<br>
+      Одно из моих важных правил - не решать проблем после 11 вечера. <br>
+      А то не уснуть потом</p>
+      <p>А это - то, что помогает проветрить голову по вечерам.<br>
+        <img src= {% static 'img/bike.jpg' %} width="400" 
+        height="300" class="d-inline-block align-top" alt=""></p>
+  </article>
+</div>
+{% endblock %}

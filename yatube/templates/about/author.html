@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+<body>
+  <main>
+    <div class="container">
+        <h1>Привет, я Макс</h1>
+        <h2>Hi, I'm Max</h2>
+        <h3>Ciao, sono Massimo</h3>
+        <h4>שלום! אני מקסים</h4>
+        <p>
+        Хочу стать бэкэндером. Вот сижу и работаю над этим.<br>
+        Бывает тяжело и грустно. А бывает радостно. Вцелом нравится
+        </p>
+        <p><b>Вот так я выгляжу, когда маниакально ищу инфу и ошибки</b><br>
+        <img src= {% static 'img/me.jpg' %} width="400" 
+        height="300" class="d-inline-block align-top" alt=""></p>
+        <p></p>
+        <a href="https://github.com/milmax75" target="_blank"> <b>А вот мой GitHub</b> </a>
+    </div>
+  </main>
+</body>
+{% endblock %} 

@@ -1,0 +1,8 @@
+{% load thumbnail %}
+<div class="row">
+    <aside class="col-12 col-md-5">
+      {% thumbnail post.image "900x400" crop="left" upscale=True as im %}
+        <img class="card-img my-2" src="{{ im.url }}">
+      {% endthumbnail %}  
+    </aside>
+  </div>
