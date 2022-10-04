@@ -261,31 +261,45 @@ class TaskViewTests(TestCase):
         response3 = self.authorized_client.get(page)
         self.assertNotEqual(response1.content, response3.content)
 
-    def test_follow_unfollow_message_show(self):
-        author = User.objects.get(username='auth')
-        user = User.objects.get(username='HasNoName')
-        follow_num = Follow.objects.all().count()
-        Follow.objects.create(user=user, author=author)
-        self.assertEqual(Follow.objects.all().count(), follow_num + 1)
 
+class FollowViewTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user1 = User.objects.create_user(username='HasNoName')
+        cls.user2 = User.objects.create_user(username='auth')
+        cls.following = Follow.objects.create(user=cls.user1,
+                                              author=cls.user2)
+
+    def setUp(self):
+        self.author = Client()
+        self.user3 = User.objects.get(username='auth')
+        self.author.force_login(self.user3)
+        self.follower = Client()
+        self.user4 = User.objects.get(username='HasNoName')
+        self.follower.force_login(self.user4)
+
+    def test_follow_unfollow(self):
+        self.assertTrue(Follow.objects.filter(user=self.user1,
+                                              author=self.user2).exists())
+        Follow.objects.filter(user=self.user1,
+                              author=self.user2).delete()
+        self.assertFalse(Follow.objects.filter(user=self.user1,
+                                               author=self.user2).exists())
+
+    def test_message_show(self):
         url = reverse('posts:post_create')
         self.author.post(url, {'text': 'проверка подписки', })
         page = reverse('posts:follow_index')
         non_follower_resp = self.author.get(page)
-        follower_resp = self.authorized_client.get(page)
+        follower_resp = self.follower.get(page)
         self.assertIn(Post.objects.get(text='проверка подписки'),
                       follower_resp.context['page_obj'])
         self.assertNotIn(Post.objects.get(text='проверка подписки'),
                          non_follower_resp.context['page_obj'])
 
-        Follow.objects.filter(user=user, author=author).delete()
-        self.assertEqual(Follow.objects.all().count(), follow_num)
-
     def test_unique_follow(self):
-        author = User.objects.get(username='auth')
-        user = User.objects.get(username='HasNoName')
-        Follow.objects.create(user=user, author=author)
         try:
-            Follow.objects.create(user=user, author=author)
+            Follow.objects.create(user=self.user1, author=self.user2)
         except IntegrityError:
             print('second record not created')

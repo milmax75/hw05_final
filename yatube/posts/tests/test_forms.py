@@ -72,6 +72,7 @@ class TaskViewTests(TestCase):
         )
         self.assertEqual(Post.objects.get(id=2).group.id, 1)
         self.assertEqual(Post.objects.get(id=2).author.username, 'auth')
+        self.assertEqual(Post.objects.get(id=2).image, 'posts/small.gif')
         self.assertTrue(
             Post.objects.filter(
                 text='новый проверочный пост',
