@@ -39,10 +39,11 @@ def profile(request, username):
     page_obj = do_pagination(request, posts)
     template = 'posts/profile.html'
     following = False
-    if request.user.is_authenticated:
-        context = {'page_obj': page_obj, }
-        following = Follow.objects.filter(user=request.user,
-                                          author=author).exists()
+    if (request.user.is_authenticated and Follow.objects.filter(
+        user=request.user,
+        author=author
+    ).exists()):
+        following = True
 
     context = {'page_obj': page_obj,
                'author': author,
@@ -128,7 +129,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    # Подписаться на автора
+    '''Подписаться на автора'''
     if request.user.get_username() != username:
         Follow.objects.get_or_create(
             author=User.objects.get(username=username),
@@ -139,6 +140,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    '''отписаться от автора'''
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=request.user, author=author).delete()
     return redirect('posts:profile', username=username)

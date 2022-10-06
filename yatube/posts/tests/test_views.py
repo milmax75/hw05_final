@@ -40,9 +40,8 @@ class TaskViewTests(TestCase):
             b'\x0A\x00\x3B'
         )
 
-        test_posts = []
-        for i in range(0, 12):
-            test_post = Post(
+        test_posts = [(
+            Post(
                 text=f'Тестовый пост {i}',
                 author=cls.user,
                 group=cls.group1,
@@ -52,8 +51,9 @@ class TaskViewTests(TestCase):
                     content_type='image/gif'
                 )
             )
-            test_posts.append(test_post)
-            cache.clear()
+        ) for i in range(12)]
+
+        cache.clear()
         cls.post = Post.objects.bulk_create(test_posts)
 
     @classmethod
@@ -282,8 +282,8 @@ class FollowViewTests(TestCase):
     def test_follow_unfollow(self):
         self.assertTrue(Follow.objects.filter(user=self.user1,
                                               author=self.user2).exists())
-        Follow.objects.filter(user=self.user1,
-                              author=self.user2).delete()
+        page = reverse('posts:profile_unfollow', kwargs={'username': 'auth'})
+        self.follower.get(page)
         self.assertFalse(Follow.objects.filter(user=self.user1,
                                                author=self.user2).exists())
 
