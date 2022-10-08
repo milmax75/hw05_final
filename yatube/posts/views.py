@@ -38,12 +38,10 @@ def profile(request, username):
     posts = author.posts.all()
     page_obj = do_pagination(request, posts)
     template = 'posts/profile.html'
-    following = False
-    if (request.user.is_authenticated and Follow.objects.filter(
+    following = (request.user.is_authenticated and Follow.objects.filter(
         user=request.user,
         author=author
-    ).exists()):
-        following = True
+    ).exists())
 
     context = {'page_obj': page_obj,
                'author': author,

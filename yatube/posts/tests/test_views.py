@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
@@ -268,8 +269,6 @@ class FollowViewTests(TestCase):
         super().setUpClass()
         cls.user1 = User.objects.create_user(username='HasNoName')
         cls.user2 = User.objects.create_user(username='auth')
-        cls.following = Follow.objects.create(user=cls.user1,
-                                              author=cls.user2)
 
     def setUp(self):
         self.author = Client()
@@ -278,6 +277,8 @@ class FollowViewTests(TestCase):
         self.follower = Client()
         self.user4 = User.objects.get(username='HasNoName')
         self.follower.force_login(self.user4)
+        page = reverse('posts:profile_follow', kwargs={'username': 'auth'})
+        self.follower.get(page)
 
     def test_follow_unfollow(self):
         self.assertTrue(Follow.objects.filter(user=self.user1,
@@ -298,8 +299,19 @@ class FollowViewTests(TestCase):
         self.assertNotIn(Post.objects.get(text='проверка подписки'),
                          non_follower_resp.context['page_obj'])
 
+    def test_self_subscribe_not_allowed(self):
+        page = reverse('posts:profile_follow',
+                       kwargs={'username': 'HasNoName'})
+        self.follower.get(page)
+        self.assertFalse(Follow.objects.filter(user=self.user1,
+                                               author=self.user1).exists())
+
     def test_unique_follow(self):
         try:
-            Follow.objects.create(user=self.user1, author=self.user2)
+            '''Duplicates should be prevented.'''
+            with transaction.atomic():
+                Follow.objects.create(user=self.user1, author=self.user2)
         except IntegrityError:
             print('second record not created')
+        self.assertEqual(Follow.objects.filter(user=self.user1,
+                                               author=self.user2).count(), 1)
