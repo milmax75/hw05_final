@@ -5,8 +5,6 @@ from django import forms
 from django.conf import settings
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db import transaction
-from django.db.utils import IntegrityError
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
@@ -280,9 +278,11 @@ class FollowViewTests(TestCase):
         page = reverse('posts:profile_follow', kwargs={'username': 'auth'})
         self.follower.get(page)
 
-    def test_follow_unfollow(self):
+    def test_follow(self):
         self.assertTrue(Follow.objects.filter(user=self.user1,
                                               author=self.user2).exists())
+
+    def test_unfollow(self):
         page = reverse('posts:profile_unfollow', kwargs={'username': 'auth'})
         self.follower.get(page)
         self.assertFalse(Follow.objects.filter(user=self.user1,
@@ -305,13 +305,3 @@ class FollowViewTests(TestCase):
         self.follower.get(page)
         self.assertFalse(Follow.objects.filter(user=self.user1,
                                                author=self.user1).exists())
-
-    def test_unique_follow(self):
-        try:
-            '''Duplicates should be prevented.'''
-            with transaction.atomic():
-                Follow.objects.create(user=self.user1, author=self.user2)
-        except IntegrityError:
-            print('second record not created')
-        self.assertEqual(Follow.objects.filter(user=self.user1,
-                                               author=self.user2).count(), 1)
