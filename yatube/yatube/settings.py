@@ -31,7 +31,9 @@ ALLOWED_HOSTS = ['localhost',
                  '158.160.57.189',
                  '51.250.2.165',
                  '[::1]',
-                 'testserver', ]
+                 'testserver',
+                 'www.milmax.pythonanywhere.com',
+                 'milmax.pythonanywhere.com',]
 
 
 # Application definition
