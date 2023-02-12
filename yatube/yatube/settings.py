@@ -23,10 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')jc1h@lvl^2mg&_pqzozn!8v55x7y&+ahgwvyep&9=xn6z&nw+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1',
+                 '51.250.2.165'
                  '[::1]',
                  'testserver',
                  'www.milmax.pythonanywhere.com',
