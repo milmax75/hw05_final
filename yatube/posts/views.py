@@ -127,7 +127,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    '''Подписаться на автора'''
+    '''Follow the author.'''
     if request.user.get_username() != username:
         Follow.objects.get_or_create(
             author=User.objects.get(username=username),
@@ -138,7 +138,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    '''отписаться от автора'''
+    '''Unfollow the author.'''
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=request.user, author=author).delete()
     return redirect('posts:profile', username=username)
