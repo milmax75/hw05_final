@@ -2,12 +2,12 @@ from django.db import models
 
 
 class CreatedModel(models.Model):
-    """Абстрактная модель. Добавляет дату создания."""
+    """Abstract model. Adds creation date."""
     pub_date = models.DateTimeField(
         'Дата создания',
         auto_now_add=True
     )
 
     class Meta:
-        # Это абстрактная модель:
+        # This is an abstract model:
         abstract = True
