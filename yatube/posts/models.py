@@ -9,14 +9,14 @@ User = get_user_model()
 
 class Group(models.Model):
     title = models.CharField(
-        verbose_name='название',
+        verbose_name='Group name',
         max_length=200,
-        help_text='назовите группу'
+        help_text='Name the group'
     )
     slug = models.SlugField(unique=True)
     description = models.TextField(
-        verbose_name='описание',
-        help_text='напишите, о чем группа'
+        verbose_name='description',
+        help_text='What is this group about'
     )
 
     def __str__(self):
@@ -25,14 +25,14 @@ class Group(models.Model):
 
 class Post(CreatedModel):
     text = models.TextField(
-        verbose_name='текст поста',
-        help_text='напечататйте свой пост здесь'
+        verbose_name='Post text',
+        help_text='Write your post here'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='posts',
-        verbose_name='автор поста'
+        verbose_name='Post author'
     )
     group = models.ForeignKey(
         Group,
@@ -40,19 +40,19 @@ class Post(CreatedModel):
         related_name='posts',
         blank=True,
         null=True,
-        verbose_name='Группа',
-        help_text='Группа, к которой будет относиться пост'
+        verbose_name='Group',
+        help_text='Choose a group for the post'
     )
     image = models.ImageField(
-        'Картинка',
+        'Image',
         upload_to='posts/',
         blank=True
     )
 
     class Meta:
         ordering = ('-pub_date', '-id')
-        verbose_name = 'Пост'
-        verbose_name_plural = 'Посты'
+        verbose_name = 'Post'
+        verbose_name_plural = 'Posts'
 
     def __str__(self):
         return self.text[:15]
@@ -63,17 +63,17 @@ class Comment(CreatedModel):
         Post,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='исходный пост'
+        verbose_name='Initial post'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='автор коммента'
+        verbose_name='Comment author'
     )
     text = models.TextField(
-        verbose_name='текст коммента',
-        help_text='напечататйте свой коммент здесь'
+        verbose_name='Comment text',
+        help_text='Write your comment here'
     )
 
     def __str__(self):
@@ -85,13 +85,13 @@ class Follow(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='follower',
-        verbose_name='юзер'
+        verbose_name='User'
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',
-        verbose_name='автор поста'
+        verbose_name='Post author'
     )
 
     class Meta:
